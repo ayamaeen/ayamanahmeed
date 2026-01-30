@@ -134,4 +134,788 @@
       padding: 14px;
       border-radius: 16px;
       border: 1px solid var(--border);
-      background: color-mix(in srgb, var(--card) 90%, var
+      background: color-mix(in srgb, var(--card) 90%, var(--bg));
+      display:grid;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .post:hover{ border-color: color-mix(in srgb, var(--brand) 25%, var(--border)); }
+    .meta{ display:flex; gap:10px; flex-wrap:wrap; color: var(--muted); font-size: 12px; }
+    .title{ font-size: 18px; font-weight: 750; margin:0; line-height:1.4; }
+    .excerpt{ margin:0; color: color-mix(in srgb, var(--text) 70%, var(--muted)); line-height:1.8; }
+    .tag{
+      display:inline-flex;
+      border:1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .post-actions{ display:flex; gap: 8px; flex-wrap:wrap; margin-top: 6px; }
+    .post-actions .btn{ padding: 8px 10px; border-radius: 12px; font-size: 13px; }
+
+    /* Sidebar */
+    aside{ padding: 14px; }
+    .side-block{ padding: 12px; border-radius: 16px; border:1px solid var(--border); background: color-mix(in srgb, var(--card) 90%, var(--bg)); margin-bottom: 10px; }
+    .side-block h3{ margin: 0 0 10px; font-size: 14px; }
+    .side-item{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; padding: 10px 0; border-top: 1px dashed var(--border); }
+    .side-item:first-of-type{ border-top: none; padding-top:0; }
+    .side-item a{ color: var(--text); font-size: 13px; line-height:1.6; }
+    .side-item span{ color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .footer{ margin-top: 18px; color: var(--muted); font-size: 12px; text-align:center; }
+
+    /* Pagination */
+    .pager{ display:flex; gap: 8px; justify-content:center; align-items:center; padding: 14px; }
+    .pager .btn{ padding: 8px 10px; }
+    .pager .pageinfo{ color: var(--muted); font-size: 13px; }
+
+    /* Modal */
+    .modal-backdrop{
+      position: fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center; padding: 18px;
+      z-index: 40;
+    }
+    .modal{
+      width: min(860px, 100%);
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .modal header{
+      position: unset; backdrop-filter: none;
+      background: transparent;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal .modal-top{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      padding: 14px;
+    }
+    .modal .modal-top h3{ margin:0; font-size: 15px; }
+    .modal .content{ padding: 14px; display:grid; gap: 10px; }
+    .two{ display:grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 800px){ .two{ grid-template-columns: 1fr; } }
+    .modal .bar{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; padding: 14px; border-top:1px solid var(--border); }
+
+    /* Reader */
+    .reader{ padding: 14px; }
+    .reader h2{ margin: 0 0 6px; font-size: 22px; line-height: 1.4; }
+    .reader .content{
+      margin-top: 10px;
+      line-height: 2;
+      color: color-mix(in srgb, var(--text) 86%, var(--muted));
+      white-space: pre-wrap;
+    }
+    .reader .toolrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    .hr{ height:1px; background: var(--border); margin: 12px 0; }
+
+    /* Comments */
+    .comments h3{ margin: 0 0 10px; font-size: 14px; }
+    .comment{ border:1px solid var(--border); border-radius: 14px; padding: 10px; margin-bottom: 8px; background: color-mix(in srgb, var(--card) 90%, var(--bg)); }
+    .comment .cmeta{ display:flex; gap:10px; justify-content:space-between; color:var(--muted); font-size: 12px; }
+    .comment p{ margin: 8px 0 0; line-height:1.9; }
+    .toast{
+      position: fixed; bottom: 14px; left: 14px;
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      color: var(--text);
+      display:none;
+      z-index: 60;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>مدونتي التقنية</h1>
+        <p>مقالات • شبكات • أمن سيبراني</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="btnTheme" title="تبديل الوضع">🌙/☀️</button>
+      <button class="btn primary" id="btnNew">+ مقال جديد</button>
+      <button class="btn" id="btnReset" title="إرجاع البيانات الافتراضية">إعادة ضبط</button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="grid">
+    <!-- Main -->
+    <main class="card">
+      <!-- Filters -->
+      <section class="filters">
+        <div class="row">
+          <div class="field">
+            <input id="q" type="search" placeholder="ابحث عن مقال… (العنوان/المحتوى/التاغات)" autocomplete="off" />
+            <div class="hint" style="margin-top:6px;">نصيحة: اكتب كلمة مثل: firewall أو pentest</div>
+          </div>
+          <div class="field" style="max-width:220px;">
+            <select id="sort">
+              <option value="newest">الأحدث</option>
+              <option value="oldest">الأقدم</option>
+              <option value="title">العنوان (أ-ي)</option>
+            </select>
+          </div>
+          <div class="field" style="max-width:210px;">
+            <select id="category">
+              <option value="">كل التصنيفات</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="justify-content:space-between;">
+          <div class="chips" id="tagChips" aria-label="التاغات"></div>
+          <div class="row">
+            <div class="hint" id="activeFilters"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reader (single post) -->
+      <section class="reader" id="reader" style="display:none;">
+        <div class="meta" id="readerMeta"></div>
+        <h2 id="readerTitle"></h2>
+        <div class="chips" id="readerTags" style="margin: 8px 0 0;"></div>
+        <div class="content" id="readerBody"></div>
+
+        <div class="toolrow">
+          <button class="btn" id="btnBack">← رجوع للقائمة</button>
+          <button class="btn" id="btnShare">🔗 نسخ رابط</button>
+          <a class="btn" id="shareX" target="_blank" rel="noopener">مشاركة X</a>
+          <a class="btn" id="shareFB" target="_blank" rel="noopener">مشاركة Facebook</a>
+          <a class="btn" id="shareWA" target="_blank" rel="noopener">مشاركة WhatsApp</a>
+          <button class="btn primary" id="btnEdit">✏️ تعديل</button>
+          <button class="btn danger" id="btnDelete">🗑️ حذف</button>
+        </div>
+
+        <div class="hr"></div>
+
+        <section class="comments">
+          <h3>التعليقات</h3>
+          <div class="hint" style="margin-bottom:10px;">التعليقات تُحفظ محليًا على جهازك.</div>
+          <div id="commentList"></div>
+
+          <div class="two" style="margin-top:10px;">
+            <div class="field"><input id="cName" type="text" placeholder="اسمك" /></div>
+            <div class="field"><input id="cEmail" type="text" placeholder="بريدك (اختياري)" /></div>
+          </div>
+          <div class="field" style="margin-top:10px;">
+            <textarea id="cText" placeholder="اكتب تعليقك…"></textarea>
+          </div>
+          <div class="row" style="justify-content:flex-end;">
+            <button class="btn primary" id="btnAddComment">إضافة تعليق</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- List -->
+      <section class="list" id="list">
+        <div class="list-head">
+          <h2>المقالات</h2>
+          <div class="count" id="count"></div>
+        </div>
+        <div id="posts"></div>
+        <div class="pager" id="pager"></div>
+      </section>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="card">
+      <div class="side-block">
+        <h3>عن المدونة</h3>
+        <div class="hint" style="line-height:1.9;">
+          مساحة لمشاركة خبرات الشبكات والأمن السيبراني.  
+          هذا القالب يعمل بدون سيرفر ويخزن البيانات محليًا.
+        </div>
+      </div>
+
+      <div class="side-block">
+        <h3>أحدث المقالات</h3>
+        <div id="latest"></div>
+      </div>
+
+      <div class="side-block">
+        <h3>التصنيفات</h3>
+        <div class="chips" id="catChips"></div>
+      </div>
+
+      <div class="side-block">
+        <h3>التاغات الأكثر استخدامًا</h3>
+        <div class="chips" id="topTags"></div>
+      </div>
+
+      <div class="side-block">
+        <h3>خيارات إضافية</h3>
+        <div class="row" style="justify-content:space-between;">
+          <a class="btn" href="#" id="btnExport">تصدير JSON</a>
+          <label class="btn" style="cursor:pointer;">
+            استيراد JSON
+            <input type="file" id="importFile" accept="application/json" hidden>
+          </label>
+        </div>
+        <div class="hint" style="margin-top:8px;">لتنقل مقالاتك بين الأجهزة.</div>
+      </div>
+
+      <div class="footer">
+        © <span id="year"></span> — قالب مدونة HTML (LocalStorage)
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Modal: New/Edit -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+  <div class="modal">
+    <header>
+      <div class="modal-top">
+        <h3 id="modalTitle">مقال جديد</h3>
+        <button class="btn" id="btnClose">✕</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="field">
+        <input id="fTitle" type="text" placeholder="عنوان المقال" />
+      </div>
+      <div class="two">
+        <div class="field">
+          <select id="fCategory"></select>
+          <div class="hint" style="margin-top:6px;">اختر تصنيفًا أو اكتب تصنيفًا جديدًا في الحقل بالأسفل.</div>
+        </div>
+        <div class="field">
+          <input id="fCategoryNew" type="text" placeholder="تصنيف جديد (اختياري)" />
+        </div>
+      </div>
+      <div class="two">
+        <div class="field">
+          <input id="fTags" type="text" placeholder="تاغات مفصولة بفواصل: firewall, vpn, pentest" />
+        </div>
+        <div class="field">
+          <input id="fCover" type="url" placeholder="رابط صورة الغلاف (اختياري)" />
+        </div>
+      </div>
+      <div class="field">
+        <textarea id="fBody" placeholder="محتوى المقال… يمكنك كتابة نص طويل هنا."></textarea>
+      </div>
+      <div class="hint">سيتم إنشاء رابط للمقال مثل: #post=ID</div>
+    </div>
+
+    <div class="bar">
+      <button class="btn" id="btnPreview">👁️ معاينة</button>
+      <button class="btn primary" id="btnSave">💾 حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================
+   Storage + Seed Data
+========================= */
+const KEY = "blog_posts_v1";
+const KEY_THEME = "blog_theme_v1";
+const KEY_COMMENTS = "blog_comments_v1";
+
+const seed = [
+  {
+    id: cryptoRandomId(),
+    title: "مقدمة سريعة عن Firewalls وأنواعها",
+    category: "أمن سيبراني",
+    tags: ["firewall","network-security","blue-team"],
+    cover: "",
+    body:
+`الجدار الناري (Firewall) هو خط دفاع أساسي للتحكم في حركة المرور بين الشبكات.
+
+**أنواع شائعة:**
+- Packet Filtering
+- Stateful Inspection
+- Next-Gen Firewall (NGFW)
+
+ابدأ بتحديد السياسات (Policies) ثم راقب السجلات (Logs) باستمرار.`,
+    createdAt: Date.now() - 1000*60*60*24*6
+  },
+  {
+    id: cryptoRandomId(),
+    title: "أساسيات تصميم شبكة صغيرة (Small Office)",
+    category: "شبكات",
+    tags: ["network-design","switching","routing"],
+    cover: "",
+    body:
+`قبل شراء الأجهزة، ارسم مخططًا واضحًا:
+- عدد المستخدمين
+- احتياج الـ Wi-Fi
+- VLANs
+- نقاط الفصل بين الضيوف والموظفين
+
+ثم اختبر الأداء وخطط للتوسع.`,
+    createdAt: Date.now() - 1000*60*60*24*3
+  },
+  {
+    id: cryptoRandomId(),
+    title: "ماذا يعني مبدأ أقل الصلاحيات (Least Privilege)؟",
+    category: "أفضل ممارسات",
+    tags: ["iam","least-privilege","security"],
+    cover: "",
+    body:
+`أعطِ كل مستخدم/خدمة أقل قدر من الصلاحيات اللازمة للعمل فقط.
+هذا يقلل تأثير أي اختراق أو خطأ بشري.
+
+ابدأ بـ:
+- مراجعة الصلاحيات دوريًا
+- إزالة الحسابات غير المستخدمة
+- تطبيق MFA`,
+    createdAt: Date.now() - 1000*60*60*24*1
+  }
+];
+
+function loadPosts(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw){
+    localStorage.setItem(KEY, JSON.stringify(seed));
+    return structuredClone(seed);
+  }
+  try { return JSON.parse(raw) || []; } catch { return []; }
+}
+function savePosts(posts){
+  localStorage.setItem(KEY, JSON.stringify(posts));
+}
+function loadComments(){
+  const raw = localStorage.getItem(KEY_COMMENTS);
+  if(!raw) return {};
+  try { return JSON.parse(raw) || {}; } catch { return {}; }
+}
+function saveComments(map){
+  localStorage.setItem(KEY_COMMENTS, JSON.stringify(map));
+}
+
+/* =========================
+   State
+========================= */
+let posts = loadPosts();
+let commentsMap = loadComments();
+
+const state = {
+  q: "",
+  category: "",
+  tag: "",
+  sort: "newest",
+  page: 1,
+  perPage: 5,
+  mode: "list",      // list | reader
+  currentId: null,
+  editingId: null
+};
+
+/* =========================
+   Helpers
+========================= */
+function cryptoRandomId(){
+  // simple and safe-enough id for local use
+  return (crypto?.randomUUID?.() || ("id-" + Math.random().toString(16).slice(2) + Date.now().toString(16)));
+}
+function fmtDate(ts){
+  const d = new Date(ts);
+  return d.toLocaleDateString("ar-IQ", { year:"numeric", month:"short", day:"2-digit" });
+}
+function escapeHtml(s){
+  return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+}
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=> t.style.display="none", 2200);
+}
+function normalizeTag(t){
+  return (t||"").trim().toLowerCase().replace(/\s+/g,"-");
+}
+function getAllCategories(){
+  const set = new Set(posts.map(p=>p.category).filter(Boolean));
+  return Array.from(set).sort((a,b)=> a.localeCompare(b, "ar"));
+}
+function getAllTags(){
+  const m = new Map();
+  for(const p of posts){
+    for(const t of (p.tags||[])){
+      m.set(t, (m.get(t)||0)+1);
+    }
+  }
+  return m;
+}
+function getFiltered(){
+  let arr = posts.slice();
+
+  if(state.q){
+    const q = state.q.toLowerCase();
+    arr = arr.filter(p=>{
+      const hay = (p.title+" "+p.body+" "+(p.category||"")+" "+(p.tags||[]).join(" ")).toLowerCase();
+      return hay.includes(q);
+    });
+  }
+  if(state.category){
+    arr = arr.filter(p=> (p.category||"") === state.category);
+  }
+  if(state.tag){
+    arr = arr.filter(p=> (p.tags||[]).includes(state.tag));
+  }
+
+  if(state.sort === "newest") arr.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+  if(state.sort === "oldest") arr.sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
+  if(state.sort === "title")  arr.sort((a,b)=> (a.title||"").localeCompare(b.title||"", "ar"));
+
+  return arr;
+}
+function setTheme(next){
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem(KEY_THEME, next);
+}
+function initTheme(){
+  const t = localStorage.getItem(KEY_THEME) || "dark";
+  setTheme(t);
+}
+
+/* =========================
+   Rendering
+========================= */
+function renderFilters(){
+  // category select
+  const catSel = document.getElementById("category");
+  const cats = getAllCategories();
+  catSel.innerHTML = `<option value="">كل التصنيفات</option>` + cats.map(c=>`<option ${c===state.category?"selected":""} value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+
+  // tag chips (top 10 by frequency)
+  const tagMap = getAllTags();
+  const sortedTags = Array.from(tagMap.entries()).sort((a,b)=> b[1]-a[1]).slice(0, 12);
+  const tagChips = document.getElementById("tagChips");
+  tagChips.innerHTML = `
+    <span class="chip ${state.tag===""?"active":""}" data-tag="">الكل</span>
+    ${sortedTags.map(([t,n])=> `<span class="chip ${t===state.tag?"active":""}" data-tag="${escapeHtml(t)}">#${escapeHtml(t)} <span style="opacity:.7">(${n})</span></span>`).join("")}
+  `;
+
+  // active filters label
+  const af = [];
+  if(state.q) af.push(`بحث: "${state.q}"`);
+  if(state.category) af.push(`تصنيف: ${state.category}`);
+  if(state.tag) af.push(`تاغ: #${state.tag}`);
+  document.getElementById("activeFilters").textContent = af.length ? af.join(" • ") : "لا توجد فلاتر نشطة";
+}
+
+function renderSidebar(){
+  // latest
+  const latest = posts.slice().sort((a,b)=> (b.createdAt||0)-(a.createdAt||0)).slice(0,6);
+  document.getElementById("latest").innerHTML = latest.map(p=>`
+    <div class="side-item">
+      <a href="#post=${encodeURIComponent(p.id)}">${escapeHtml(p.title)}</a>
+      <span>${fmtDate(p.createdAt)}</span>
+    </div>
+  `).join("");
+
+  // category chips
+  const cats = getAllCategories();
+  const catChips = document.getElementById("catChips");
+  catChips.innerHTML = cats.map(c=>`
+    <span class="chip ${c===state.category?"active":""}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</span>
+  `).join("") || `<div class="hint">لا توجد تصنيفات بعد.</div>`;
+
+  // top tags chips
+  const tagMap = getAllTags();
+  const top = Array.from(tagMap.entries()).sort((a,b)=> b[1]-a[1]).slice(0, 18);
+  document.getElementById("topTags").innerHTML = top.map(([t,n])=>`
+    <span class="chip ${t===state.tag?"active":""}" data-tag="${escapeHtml(t)}">#${escapeHtml(t)} <span style="opacity:.7">(${n})</span></span>
+  `).join("") || `<div class="hint">لا توجد تاغات بعد.</div>`;
+}
+
+function renderList(){
+  const wrap = document.getElementById("posts");
+  const pager = document.getElementById("pager");
+  const list = getFiltered();
+
+  // pagination
+  const total = list.length;
+  const pages = Math.max(1, Math.ceil(total / state.perPage));
+  state.page = Math.min(state.page, pages);
+  const start = (state.page-1)*state.perPage;
+  const slice = list.slice(start, start + state.perPage);
+
+  document.getElementById("count").textContent = `${total} مقال`;
+
+  wrap.innerHTML = slice.map(p=>{
+    const excerpt = (p.body||"").trim().slice(0, 140) + ((p.body||"").length > 140 ? "…" : "");
+    return `
+      <article class="post">
+        <div class="meta">
+          <span>📁 ${escapeHtml(p.category||"بدون تصنيف")}</span>
+          <span>🗓️ ${fmtDate(p.createdAt)}</span>
+          <span>🔗 <a href="#post=${encodeURIComponent(p.id)}" style="text-decoration:underline;color:inherit;">رابط المقال</a></span>
+        </div>
+        <h3 class="title"><a href="#post=${encodeURIComponent(p.id)}">${escapeHtml(p.title)}</a></h3>
+        <p class="excerpt">${escapeHtml(excerpt)}</p>
+        <div class="row">
+          ${(p.tags||[]).slice(0,8).map(t=>`<span class="tag">#${escapeHtml(t)}</span>`).join(" ")}
+        </div>
+        <div class="post-actions">
+          <button class="btn" data-open="${escapeHtml(p.id)}">قراءة</button>
+          <button class="btn" data-edit="${escapeHtml(p.id)}">تعديل</button>
+          <button class="btn danger" data-del="${escapeHtml(p.id)}">حذف</button>
+        </div>
+      </article>
+    `;
+  }).join("") || `<div class="hint">لا توجد نتائج. جرّب تغيير البحث أو إزالة الفلاتر.</div>`;
+
+  pager.innerHTML = `
+    <button class="btn" ${state.page<=1?"disabled":""} data-page="prev">السابق</button>
+    <span class="pageinfo">صفحة ${state.page} من ${pages}</span>
+    <button class="btn" ${state.page>=pages?"disabled":""} data-page="next">التالي</button>
+  `;
+}
+
+function openReader(id){
+  const p = posts.find(x=>x.id===id);
+  if(!p){ toast("المقال غير موجود."); location.hash = ""; return; }
+
+  state.mode = "reader";
+  state.currentId = id;
+
+  document.getElementById("list").style.display = "none";
+  document.getElementById("reader").style.display = "block";
+
+  document.getElementById("readerMeta").innerHTML =
+    `<span>📁 ${escapeHtml(p.category||"بدون تصنيف")}</span>
+     <span>🗓️ ${fmtDate(p.createdAt)}</span>`;
+
+  document.getElementById("readerTitle").textContent = p.title || "";
+  document.getElementById("readerBody").textContent = p.body || "";
+
+  const tagsWrap = document.getElementById("readerTags");
+  tagsWrap.innerHTML = (p.tags||[]).map(t=> `<span class="chip" data-tag="${escapeHtml(t)}">#${escapeHtml(t)}</span>`).join("");
+
+  // share links
+  const url = location.origin + location.pathname + "#post=" + encodeURIComponent(p.id);
+  document.getElementById("shareX").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(p.title) + "&url=" + encodeURIComponent(url);
+  document.getElementById("shareFB").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
+  document.getElementById("shareWA").href = "https://wa.me/?text=" + encodeURIComponent(p.title + " " + url);
+
+  renderComments();
+}
+
+function closeReader(){
+  state.mode = "list";
+  state.currentId = null;
+  document.getElementById("reader").style.display = "none";
+  document.getElementById("list").style.display = "block";
+}
+
+function renderComments(){
+  const id = state.currentId;
+  const list = (commentsMap[id] || []).slice().sort((a,b)=> (b.at||0)-(a.at||0));
+  const wrap = document.getElementById("commentList");
+  wrap.innerHTML = list.map(c=>`
+    <div class="comment">
+      <div class="cmeta">
+        <span>👤 ${escapeHtml(c.name||"مجهول")}</span>
+        <span>${fmtDate(c.at)}</span>
+      </div>
+      <p>${escapeHtml(c.text||"")}</p>
+    </div>
+  `).join("") || `<div class="hint">لا توجد تعليقات بعد. كن أول من يعلق!</div>`;
+}
+
+/* =========================
+   Modal (New/Edit)
+========================= */
+function openModal(mode, id=null){
+  const backdrop = document.getElementById("modalBackdrop");
+  const mt = document.getElementById("modalTitle");
+  const fCategory = document.getElementById("fCategory");
+  const cats = getAllCategories();
+
+  fCategory.innerHTML =
+    `<option value="">اختر تصنيفًا</option>` +
+    cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+
+  if(mode==="new"){
+    state.editingId = null;
+    mt.textContent = "مقال جديد";
+    document.getElementById("fTitle").value = "";
+    document.getElementById("fCategory").value = "";
+    document.getElementById("fCategoryNew").value = "";
+    document.getElementById("fTags").value = "";
+    document.getElementById("fCover").value = "";
+    document.getElementById("fBody").value = "";
+  }else{
+    const p = posts.find(x=>x.id===id);
+    if(!p){ toast("تعذر فتح المقال للتعديل."); return; }
+    state.editingId = id;
+    mt.textContent = "تعديل المقال";
+    document.getElementById("fTitle").value = p.title || "";
+    document.getElementById("fCategory").value = p.category || "";
+    document.getElementById("fCategoryNew").value = "";
+    document.getElementById("fTags").value = (p.tags||[]).join(", ");
+    document.getElementById("fCover").value = p.cover || "";
+    document.getElementById("fBody").value = p.body || "";
+  }
+
+  backdrop.style.display = "flex";
+}
+function closeModal(){
+  document.getElementById("modalBackdrop").style.display = "none";
+}
+function saveFromModal(){
+  const title = document.getElementById("fTitle").value.trim();
+  const catSel = document.getElementById("fCategory").value.trim();
+  const catNew = document.getElementById("fCategoryNew").value.trim();
+  const category = catNew || catSel || "بدون تصنيف";
+  const tags = document.getElementById("fTags").value.split(",").map(normalizeTag).filter(Boolean);
+  const cover = document.getElementById("fCover").value.trim();
+  const body = document.getElementById("fBody").value.trim();
+
+  if(!title || !body){ toast("العنوان والمحتوى مطلوبان."); return; }
+
+  if(state.editingId){
+    const idx = posts.findIndex(p=>p.id===state.editingId);
+    if(idx>=0){
+      posts[idx] = { ...posts[idx], title, category, tags, cover, body };
+    }
+    toast("تم تحديث المقال ✅");
+  }else{
+    const p = { id: cryptoRandomId(), title, category, tags, cover, body, createdAt: Date.now() };
+    posts.push(p);
+    toast("تم إضافة المقال ✅");
+  }
+
+  savePosts(posts);
+  closeModal();
+  hydrate(); // rerender everything
+}
+function previewModal(){
+  const title = document.getElementById("fTitle").value.trim() || "(بدون عنوان)";
+  const body = document.getElementById("fBody").value.trim() || "(بدون محتوى)";
+  alert("معاينة سريعة:\n\n" + title + "\n\n" + body.slice(0, 500) + (body.length>500 ? "…" : ""));
+}
+
+/* =========================
+   Delete
+========================= */
+function deletePost(id){
+  const p = posts.find(x=>x.id===id);
+  if(!p) return;
+
+  if(!confirm("هل تريد حذف هذا المقال؟ لا يمكن التراجع.")) return;
+  posts = posts.filter(x=>x.id!==id);
+  savePosts(posts);
+
+  // remove its comments
+  delete commentsMap[id];
+  saveComments(commentsMap);
+
+  toast("تم حذف المقال 🗑️");
+  if(state.currentId===id) closeReader();
+  hydrate();
+}
+
+/* =========================
+   Comments
+========================= */
+function addComment(){
+  const id = state.currentId;
+  if(!id) return;
+
+  const name = document.getElementById("cName").value.trim() || "مجهول";
+  const email = document.getElementById("cEmail").value.trim();
+  const text = document.getElementById("cText").value.trim();
+
+  if(!text){ toast("اكتب تعليقًا أولاً."); return; }
+
+  const entry = { name, email, text, at: Date.now() };
+  commentsMap[id] = commentsMap[id] || [];
+  commentsMap[id].push(entry);
+  saveComments(commentsMap);
+
+  document.getElementById("cText").value = "";
+  toast("تمت إضافة التعليق ✅");
+  renderComments();
+}
+
+/* =========================
+   Import/Export
+========================= */
+function exportJSON(e){
+  e.preventDefault();
+  const data = { posts, commentsMap, exportedAt: Date.now() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "blog-export.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+async function importJSON(file){
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if(!data.posts || !Array.isArray(data.posts)) throw new Error("صيغة غير صحيحة");
+    posts = data.posts;
+    commentsMap = data.commentsMap || {};
+    savePosts(posts);
+    saveComments(commentsMap);
+    toast("تم الاستيراد ✅");
+    hydrate();
+  }catch(err){
+    toast("فشل الاستيراد: " + (err?.message || "خطأ"));
+  }
+}
+
+/* =========================
+   Router (hash)
+========================= */
+function handleHash(){
+  const hash = location.hash || "";
+  const m = hash.match(/#post=([^&]+)/);
+  if(m){
+    const id = decodeURIComponent(m[1]);
+    openReader(id);
+  }else{
+    closeReader();
+  }
+}
+
+/* =========================
+   Hydrate (render all)
+========================= */
+function hydrate(){
+  // ensure unique IDs
+  posts = (posts||[]).filter(Boolean);
+
+  renderFilters();
+  renderSidebar();
+  renderList();
+
+  // fill modal category select each time
+  // also update reader tags chip click
+}
+
+/* =========================
+   Events
+========================= */
+function bind(){
+  // year
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // theme
+  initTheme();
+  document.getElementById("btnTheme").addEventListener("click", ()=>{
+    const cur = document.documentElement.getAttribute("data-theme") || "dark";
+    setTheme(cur==="dark
+
