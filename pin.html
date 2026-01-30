@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مقال: Nmap و Metasploit وعلاقتهما بالذكاء الاصطناعي</title>
+
+  <!-- SEO Meta -->
+  <meta name="description" content="مقال شامل يشرح Nmap و Metasploit وعلاقتهما بالأمن السيبراني والذكاء الاصطناعي وكيفية ربطهما معًا وربطهما بتقنيات AI و Machine Learning." />
+  <meta name="keywords" content="Nmap, Metasploit, Cybersecurity, Ethical Hacking, Penetration Testing, Network Security, Vulnerability Assessment, Artificial Intelligence in Cybersecurity, AI Security, Machine Learning Security, Network Scanning, Port Scanning, Exploit Development, Red Team, Blue Team, SOC, CVE, Vulnerability Scanner, Kali Linux, Offensive Security, Information Security" />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0a1a2c;
+      --card:#0f1a33cc;
+      --text:#eaf0ff;
+      --muted:#b9c6e6;
+      --accent:#4aa3ff;
+      --border:rgba(255,255,255,.12);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --codebg: rgba(255,255,255,.06);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Tajawal", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      line-height:2;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 14px 80px;
+    }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(9,14,30,.55);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .nav{
+      max-width: 980px;
+      margin: auto;
+      padding: 12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+    }
+
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background: linear-gradient(135deg, var(--accent), #7c5cff);
+    }
+
+    .navLinks a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:700;
+      padding:10px 12px;
+      border-radius:12px;
+    }
+
+    .hero{
+      margin-top:18px;
+      padding:24px;
+      border-radius:var(--radius);
+      background:var(--card);
+      box-shadow:var(--shadow);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      font-weight:800;
+      color:var(--muted);
+    }
+
+    h1,h2,h3{ font-weight:900; }
+
+    .content{
+      margin-top:18px;
+      padding:22px;
+      border-radius:var(--radius);
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.1);
+    }
+
+    pre{
+      background:rgba(0,0,0,.4);
+      padding:14px;
+      border-radius:14px;
+      overflow:auto;
+      direction:ltr;
+    }
+
+    .note{
+      margin:14px 0;
+      padding:14px;
+      border-radius:14px;
+      background:rgba(74,163,255,.12);
+      border:1px solid rgba(74,163,255,.3);
+    }
+
+    /* ===== Author Box (إضافة فقط) ===== */
+    .author-box{
+      margin-top:32px;
+      padding:20px 22px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.14);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .author-box p{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+      line-height:1.9;
+    }
+
+    .author-box img{
+      width:90px;
+      height:90px;
+      object-fit:cover;
+      border-radius:14px;
+      border:3px solid var(--accent);
+      box-shadow:0 10px 30px rgba(0,0,0,.45);
+    }
+
+    @media (max-width:600px){
+      .author-box{
+        flex-direction:column;
+        text-align:center;
+      }
+    }
+
+    footer{
+      text-align:center;
+      margin-top:30px;
+      color:rgba(255,255,255,.6);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>مدونة الشبكات والأمن السيبراني</span>
+    </div>
+    <div class="navLinks">
+      <a href="#article">المقال</a>
+      <a href="#keywords">الكلمات المفتاحية</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<section class="hero" id="article">
+  <span class="badge">🌐 Networks • 🔐 Cybersecurity • 🤖 AI</span>
+  <h1>مقال: Nmap و Metasploit ودورهما في الأمن السيبراني والذكاء الاصطناعي</h1>
+  <p>شرح شامل + علاقة الأدوات بالذكاء الاصطناعي + أفكار ربط عملي.</p>
+</section>
+
+<article class="content">
+
+<!-- 🔴 المقال كامل كما هو -->
+<h2>مقدمة</h2>
+<p>في عالم الأمن السيبراني المتسارع، أصبحت أدوات اختبار الاختراق حجر الأساس...</p>
+
+<!-- (بقية المقال عندك بدون تغيير) -->
+
+<!-- ✅ Author Box -->
+<div class="author-box">
+  <p>✍️ تم كتابة هذا المقال من قبل<br>
+    <strong>المهندس أيمن أحمد تالي جياد الفرطوسي</strong>
+  </p>
+  <img src="cover.jpg" alt="المهندس أيمن أحمد تالي جياد الفرطوسي">
+</div>
+
+</article>
+
+<footer>
+  © جميع الحقوق محفوظة — مدونة الشبكات والأمن السيبراني
+</footer>
+
+</main>
+
+</body>
+</html>
