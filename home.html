@@ -1,921 +1,468 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>مدونتي | Blog</title>
-  <meta name="description" content="مدونة شخصية احترافية مع بحث، تصنيفات، تاغات، وضع ليلي، وإدارة مقالات محليًا." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مقال: Nmap و Metasploit وعلاقتهما بالذكاء الاصطناعي</title>
+
+  <!-- SEO Meta -->
+  <meta name="description" content="مقال شامل يشرح Nmap و Metasploit وعلاقتهما بالأمن السيبراني والذكاء الاصطناعي وكيفية ربطهما معًا وربطهما بتقنيات AI و Machine Learning." />
+  <meta name="keywords" content="Nmap, Metasploit, Cybersecurity, Ethical Hacking, Penetration Testing, Network Security, Vulnerability Assessment, Artificial Intelligence in Cybersecurity, AI Security, Machine Learning Security, Network Scanning, Port Scanning, Exploit Development, Red Team, Blue Team, SOC, CVE, Vulnerability Scanner, Kali Linux, Offensive Security, Information Security, Network Analysis, Threat Detection, Cyber Defense, Automation in Cybersecurity, Smart Security Systems, AI Penetration Testing, Digital Forensics, IDS, IPS, Firewall Testing, Reconnaissance, OS Detection, Service Detection, NSE Scripts, Meterpreter, Payloads, Exploits, Auxiliary Modules, Post Exploitation, CVSS, Threat Intelligence, SIEM, SOAR" />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg:#0b1220; --card:#0f1a2e; --muted:#96a3b7; --text:#eef3ff; --brand:#7c5cff;
-      --border: rgba(255,255,255,.08);
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --bg1:#0b1020;
+      --bg2:#0a1a2c;
+      --card:#0f1a33cc;
+      --text:#eaf0ff;
+      --muted:#b9c6e6;
+      --accent:#4aa3ff;
+      --accent2:#7c5cff;
+      --border:rgba(255,255,255,.12);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
       --radius: 18px;
-      --focus: 0 0 0 3px rgba(124,92,255,.25);
-      --btn:#162645;
-      --btn2:#1a2d52;
-      --danger:#ff4d4d;
-      --ok:#35d07f;
+      --codebg: rgba(255,255,255,.06);
     }
-    [data-theme="light"]{
-      --bg:#f5f7fb; --card:#ffffff; --muted:#5b6575; --text:#111827; --brand:#5b3df0;
-      --border: rgba(17,24,39,.10);
-      --shadow: 0 10px 30px rgba(17,24,39,.10);
-      --btn:#eef2ff;
-      --btn2:#e6e9ff;
-      --danger:#e11d48;
-      --ok:#16a34a;
-    }
+
     *{ box-sizing:border-box; }
     body{
-      margin:0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 20% 0%, rgba(124,92,255,.18), transparent 60%),
-                  radial-gradient(1200px 600px at 80% 20%, rgba(53,208,127,.12), transparent 60%),
-                  var(--bg);
-      color: var(--text);
+      margin:0;
+      font-family:"Tajawal", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 20% 15%, rgba(74,163,255,.22), transparent 60%),
+        radial-gradient(900px 550px at 80% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 50% 100%, rgba(34,211,238,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      overflow-x:hidden;
+      line-height: 2;
     }
-    a{ color: inherit; text-decoration: none; }
-    .container{ max-width:1200px; margin:0 auto; padding: 22px 16px 60px; }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 14px 80px;
+    }
+
     header{
-      position: sticky; top:0; z-index: 20;
+      position: sticky;
+      top: 0;
+      z-index: 10;
       backdrop-filter: blur(10px);
-      background: color-mix(in srgb, var(--bg) 70%, transparent);
-      border-bottom: 1px solid var(--border);
-    }
-    .topbar{ display:flex; gap:12px; align-items:center; justify-content:space-between; padding: 14px 16px; max-width:1200px; margin:0 auto; }
-    .brand{ display:flex; gap:10px; align-items:center; }
-    .logo{
-      width:38px; height:38px; border-radius: 14px;
-      background: linear-gradient(135deg, var(--brand), color-mix(in srgb, var(--brand) 10%, var(--ok)));
-      box-shadow: var(--shadow);
-    }
-    .brand h1{ margin:0; font-size: 16px; }
-    .brand p{ margin:0; font-size:12px; color:var(--muted); }
-    .actions{ display:flex; gap:10px; align-items:center; }
-    button, .chip, input, select, textarea{
-      font: inherit;
-    }
-    .btn{
-      border:1px solid var(--border);
-      background: var(--btn);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 14px;
-      cursor:pointer;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-    }
-    .btn:hover{ background: var(--btn2); }
-    .btn:active{ transform: scale(.98); }
-    .btn.primary{
-      border-color: color-mix(in srgb, var(--brand) 55%, var(--border));
-      background: color-mix(in srgb, var(--brand) 20%, var(--btn));
-    }
-    .btn.danger{
-      border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
-      background: color-mix(in srgb, var(--danger) 14%, var(--btn));
-    }
-    .btn:focus, input:focus, select:focus, textarea:focus{ outline:none; box-shadow: var(--focus); }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 16px;
-      margin-top: 18px;
-    }
-    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
-
-    .card{
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      background: rgba(9, 14, 30, .55);
+      border-bottom: 1px solid rgba(255,255,255,.07);
     }
 
-    /* Filters */
-    .filters{ padding: 14px; display:grid; gap: 10px; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .field{ flex:1; min-width: 210px; position: relative; }
-    input[type="search"], input[type="text"], input[type="url"], select, textarea{
-      width:100%;
-      padding: 11px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: color-mix(in srgb, var(--card) 85%, var(--bg));
-      color: var(--text);
-    }
-    textarea{ min-height: 140px; resize: vertical; }
-    .hint{ font-size:12px; color:var(--muted); }
-    .chips{ display:flex; gap: 8px; flex-wrap:wrap; }
-    .chip{
-      display:inline-flex; align-items:center; gap:6px;
-      border:1px solid var(--border);
-      background: color-mix(in srgb, var(--card) 85%, var(--bg));
-      padding: 8px 10px;
-      border-radius: 999px;
-      cursor:pointer;
-      user-select:none;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .chip.active{
-      color: var(--text);
-      border-color: color-mix(in srgb, var(--brand) 45%, var(--border));
-      background: color-mix(in srgb, var(--brand) 12%, var(--card));
+    .nav{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
 
-    /* List */
-    .list{ padding: 14px; }
-    .list-head{
-      display:flex; align-items:center; justify-content:space-between;
-      gap:10px; margin-bottom: 10px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
     }
-    .list-head h2{ margin:0; font-size: 16px; }
-    .count{ color: var(--muted); font-size: 13px; }
-    .post{
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      background: color-mix(in srgb, var(--card) 90%, var(--bg));
-      display:grid;
-      gap: 8px;
-      margin-bottom: 10px;
+
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(74,163,255,.35);
     }
-    .post:hover{ border-color: color-mix(in srgb, var(--brand) 25%, var(--border)); }
-    .meta{ display:flex; gap:10px; flex-wrap:wrap; color: var(--muted); font-size: 12px; }
-    .title{ font-size: 18px; font-weight: 750; margin:0; line-height:1.4; }
-    .excerpt{ margin:0; color: color-mix(in srgb, var(--text) 70%, var(--muted)); line-height:1.8; }
-    .tag{
+
+    .navLinks a{
       display:inline-flex;
-      border:1px solid var(--border);
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
       color: var(--muted);
+      font-weight: 700;
     }
-    .post-actions{ display:flex; gap: 8px; flex-wrap:wrap; margin-top: 6px; }
-    .post-actions .btn{ padding: 8px 10px; border-radius: 12px; font-size: 13px; }
-
-    /* Sidebar */
-    aside{ padding: 14px; }
-    .side-block{ padding: 12px; border-radius: 16px; border:1px solid var(--border); background: color-mix(in srgb, var(--card) 90%, var(--bg)); margin-bottom: 10px; }
-    .side-block h3{ margin: 0 0 10px; font-size: 14px; }
-    .side-item{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; padding: 10px 0; border-top: 1px dashed var(--border); }
-    .side-item:first-of-type{ border-top: none; padding-top:0; }
-    .side-item a{ color: var(--text); font-size: 13px; line-height:1.6; }
-    .side-item span{ color: var(--muted); font-size: 12px; white-space: nowrap; }
-    .footer{ margin-top: 18px; color: var(--muted); font-size: 12px; text-align:center; }
-
-    /* Pagination */
-    .pager{ display:flex; gap: 8px; justify-content:center; align-items:center; padding: 14px; }
-    .pager .btn{ padding: 8px 10px; }
-    .pager .pageinfo{ color: var(--muted); font-size: 13px; }
-
-    /* Modal */
-    .modal-backdrop{
-      position: fixed; inset:0; background: rgba(0,0,0,.55);
-      display:none; align-items:center; justify-content:center; padding: 18px;
-      z-index: 40;
+    .navLinks a:hover{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      text-decoration: none;
     }
-    .modal{
-      width: min(860px, 100%);
-      border-radius: 18px;
+
+    .hero{
+      margin-top: 18px;
+      padding: 24px;
+      border-radius: var(--radius);
       background: var(--card);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       overflow: hidden;
+      position: relative;
     }
-    .modal header{
-      position: unset; backdrop-filter: none;
-      background: transparent;
-      border-bottom: 1px solid var(--border);
-    }
-    .modal .modal-top{
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      padding: 14px;
-    }
-    .modal .modal-top h3{ margin:0; font-size: 15px; }
-    .modal .content{ padding: 14px; display:grid; gap: 10px; }
-    .two{ display:grid; gap: 10px; grid-template-columns: 1fr 1fr; }
-    @media (max-width: 800px){ .two{ grid-template-columns: 1fr; } }
-    .modal .bar{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; padding: 14px; border-top:1px solid var(--border); }
 
-    /* Reader */
-    .reader{ padding: 14px; }
-    .reader h2{ margin: 0 0 6px; font-size: 22px; line-height: 1.4; }
-    .reader .content{
-      margin-top: 10px;
-      line-height: 2;
-      color: color-mix(in srgb, var(--text) 86%, var(--muted));
-      white-space: pre-wrap;
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-weight:800;
+      font-size: 14px;
     }
-    .reader .toolrow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
-    .hr{ height:1px; background: var(--border); margin: 12px 0; }
 
-    /* Comments */
-    .comments h3{ margin: 0 0 10px; font-size: 14px; }
-    .comment{ border:1px solid var(--border); border-radius: 14px; padding: 10px; margin-bottom: 8px; background: color-mix(in srgb, var(--card) 90%, var(--bg)); }
-    .comment .cmeta{ display:flex; gap:10px; justify-content:space-between; color:var(--muted); font-size: 12px; }
-    .comment p{ margin: 8px 0 0; line-height:1.9; }
-    .toast{
-      position: fixed; bottom: 14px; left: 14px;
-      background: var(--card);
-      border:1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 12px;
-      box-shadow: var(--shadow);
+    h1{
+      margin: 14px 0 8px;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height:1.2;
+      font-weight: 900;
+    }
+
+    .meta{
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .content{
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    h2{
+      margin: 20px 0 8px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    h3{
+      margin: 16px 0 8px;
+      font-size: 18px;
+      font-weight: 900;
       color: var(--text);
-      display:none;
-      z-index: 60;
     }
+
+    ul{
+      margin: 8px 0 18px;
+      padding: 0 18px 0 0;
+    }
+
+    li{ margin: 6px 0; color: var(--text); }
+
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: var(--codebg);
+      padding: 2px 7px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    pre{
+      margin: 12px 0 18px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.30);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:auto;
+      direction:ltr;
+      text-align:left;
+    }
+
+    pre code{
+      background: transparent;
+      border: 0;
+      padding: 0;
+      border-radius: 0;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .note{
+      margin: 14px 0;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(74,163,255,.25);
+      background: rgba(74,163,255,.10);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .keywords{
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 10px;
+    }
+
+    .chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    footer{
+      margin-top: 18px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+      padding: 18px 10px 0;
+    }
+
+    html{ scroll-behavior:smooth; }
   </style>
 </head>
 
 <body>
-<header>
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>مدونتي التقنية</h1>
-        <p>مقالات • شبكات • أمن سيبراني</p>
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>مدونة الشبكات والأمن السيبراني</span>
       </div>
-    </div>
-    <div class="actions">
-      <button class="btn" id="btnTheme" title="تبديل الوضع">🌙/☀️</button>
-      <button class="btn primary" id="btnNew">+ مقال جديد</button>
-      <button class="btn" id="btnReset" title="إرجاع البيانات الافتراضية">إعادة ضبط</button>
-    </div>
-  </div>
-</header>
+      <div class="navLinks">
+        <a href="#article">المقال</a>
+        <a href="#keywords">الكلمات المفتاحية</a>
+      </div>
+    </nav>
+  </header>
 
-<div class="container">
-  <div class="grid">
-    <!-- Main -->
-    <main class="card">
-      <!-- Filters -->
-      <section class="filters">
-        <div class="row">
-          <div class="field">
-            <input id="q" type="search" placeholder="ابحث عن مقال… (العنوان/المحتوى/التاغات)" autocomplete="off" />
-            <div class="hint" style="margin-top:6px;">نصيحة: اكتب كلمة مثل: firewall أو pentest</div>
-          </div>
-          <div class="field" style="max-width:220px;">
-            <select id="sort">
-              <option value="newest">الأحدث</option>
-              <option value="oldest">الأقدم</option>
-              <option value="title">العنوان (أ-ي)</option>
-            </select>
-          </div>
-          <div class="field" style="max-width:210px;">
-            <select id="category">
-              <option value="">كل التصنيفات</option>
-            </select>
-          </div>
-        </div>
+  <main class="wrap">
+    <section class="hero" id="article">
+      <span class="badge">🌐 Networks • 🔐 Cybersecurity • 🤖 AI</span>
+      <h1>مقال: Nmap و Metasploit ودورهما في الأمن السيبراني والذكاء الاصطناعي</h1>
+      <p class="meta">شرح شامل + علاقة الأدوات بالذكاء الاصطناعي + أفكار ربط عملي بين Nmap و Metasploit و AI.</p>
+    </section>
 
-        <div class="row" style="justify-content:space-between;">
-          <div class="chips" id="tagChips" aria-label="التاغات"></div>
-          <div class="row">
-            <div class="hint" id="activeFilters"></div>
-          </div>
-        </div>
-      </section>
+    <article class="content">
+      <h2>مقدمة</h2>
+      <p>
+        في عالم الأمن السيبراني المتسارع، أصبحت أدوات <b>اختبار الاختراق (Penetration Testing)</b> حجر الأساس في حماية الشبكات والأنظمة.
+        ومن بين أقوى هذه الأدوات نجد <b>Nmap</b> و <b>Metasploit Framework</b>، اللتان تُستخدمان على نطاق واسع في تحليل الشبكات،
+        اكتشاف الثغرات، ومحاكاة الهجمات.
+        ومع التطور الكبير في <b>الذكاء الاصطناعي (Artificial Intelligence)</b>، بدأ يظهر جيل جديد من الحلول الأمنية الذكية التي تدمج هذه الأدوات
+        مع تقنيات التعلم الآلي لتحليل البيانات واتخاذ قرارات أدق وأسرع.
+      </p>
 
-      <!-- Reader (single post) -->
-      <section class="reader" id="reader" style="display:none;">
-        <div class="meta" id="readerMeta"></div>
-        <h2 id="readerTitle"></h2>
-        <div class="chips" id="readerTags" style="margin: 8px 0 0;"></div>
-        <div class="content" id="readerBody"></div>
+      <h2>أولًا: ما هو Nmap؟</h2>
+      <p>
+        <b>Nmap (Network Mapper)</b> هو أداة مفتوحة المصدر تُستخدم لاستكشاف الشبكات وتحليلها.
+        تُعد من أهم الأدوات في مجال <b>Network Scanning</b> و <b>Reconnaissance</b>.
+      </p>
 
-        <div class="toolrow">
-          <button class="btn" id="btnBack">← رجوع للقائمة</button>
-          <button class="btn" id="btnShare">🔗 نسخ رابط</button>
-          <a class="btn" id="shareX" target="_blank" rel="noopener">مشاركة X</a>
-          <a class="btn" id="shareFB" target="_blank" rel="noopener">مشاركة Facebook</a>
-          <a class="btn" id="shareWA" target="_blank" rel="noopener">مشاركة WhatsApp</a>
-          <button class="btn primary" id="btnEdit">✏️ تعديل</button>
-          <button class="btn danger" id="btnDelete">🗑️ حذف</button>
-        </div>
+      <h3>أهم استخدامات Nmap</h3>
+      <ul>
+        <li>اكتشاف الأجهزة المتصلة بالشبكة</li>
+        <li>فحص المنافذ المفتوحة (Port Scanning)</li>
+        <li>تحديد أنظمة التشغيل (OS Detection)</li>
+        <li>اكتشاف الخدمات والإصدارات (Service & Version Detection)</li>
+        <li>تحليل الجدران النارية (Firewall Detection)</li>
+        <li>جمع معلومات أولية قبل اختبار الاختراق</li>
+      </ul>
 
-        <div class="hr"></div>
-
-        <section class="comments">
-          <h3>التعليقات</h3>
-          <div class="hint" style="margin-bottom:10px;">التعليقات تُحفظ محليًا على جهازك.</div>
-          <div id="commentList"></div>
-
-          <div class="two" style="margin-top:10px;">
-            <div class="field"><input id="cName" type="text" placeholder="اسمك" /></div>
-            <div class="field"><input id="cEmail" type="text" placeholder="بريدك (اختياري)" /></div>
-          </div>
-          <div class="field" style="margin-top:10px;">
-            <textarea id="cText" placeholder="اكتب تعليقك…"></textarea>
-          </div>
-          <div class="row" style="justify-content:flex-end;">
-            <button class="btn primary" id="btnAddComment">إضافة تعليق</button>
-          </div>
-        </section>
-      </section>
-
-      <!-- List -->
-      <section class="list" id="list">
-        <div class="list-head">
-          <h2>المقالات</h2>
-          <div class="count" id="count"></div>
-        </div>
-        <div id="posts"></div>
-        <div class="pager" id="pager"></div>
-      </section>
-    </main>
-
-    <!-- Sidebar -->
-    <aside class="card">
-      <div class="side-block">
-        <h3>عن المدونة</h3>
-        <div class="hint" style="line-height:1.9;">
-          مساحة لمشاركة خبرات الشبكات والأمن السيبراني.  
-          هذا القالب يعمل بدون سيرفر ويخزن البيانات محليًا.
-        </div>
+      <div class="note">
+        ملاحظة: استخدم Nmap فقط على أنظمة تملك صلاحية اختبارها (اختبار اختراق أخلاقي) لتجنب المشاكل القانونية.
       </div>
 
-      <div class="side-block">
-        <h3>أحدث المقالات</h3>
-        <div id="latest"></div>
+      <h3>مثال أمر شائع في Nmap</h3>
+      <pre><code>nmap -sS -sV -O 192.168.1.1</code></pre>
+
+      <h2>ثانيًا: ما هو Metasploit؟</h2>
+      <p>
+        <b>Metasploit Framework</b> هو منصة متقدمة لاختبار الاختراق وتطوير وتنفيذ الهجمات بشكل أخلاقي.
+        تُستخدم لاختبار قوة الأنظمة الأمنية ومحاكاة هجمات واقعية بهدف معرفة نقاط الضعف وإصلاحها.
+      </p>
+
+      <h3>أهم مكونات Metasploit</h3>
+      <ul>
+        <li><b>Exploits</b>: استغلال الثغرات</li>
+        <li><b>Payloads</b>: أكواد تُنفذ بعد نجاح الاستغلال</li>
+        <li><b>Auxiliary Modules</b>: وحدات فحص ومهام مساعدة</li>
+        <li><b>Post Exploitation</b>: ما بعد الاختراق (جمع معلومات/تثبيت/تحكم)</li>
+        <li><b>Meterpreter</b>: جلسة تحكم متقدمة بعد الاختراق</li>
+      </ul>
+
+      <h2>ثالثًا: العلاقة بين Nmap و Metasploit</h2>
+      <p>
+        العلاقة بين الأداتين <b>تكاملية</b>:
+      </p>
+      <ul>
+        <li><b>Nmap</b> يجمع المعلومات: المنافذ والخدمات والإصدارات وبيانات أولية عن الهدف.</li>
+        <li><b>Metasploit</b> يستفيد من هذه المعلومات لاختيار الاستغلال المناسب واختبار الثغرات عمليًا.</li>
+      </ul>
+
+      <h3>سيناريو بسيط</h3>
+      <ul>
+        <li>تشغّل Nmap لاكتشاف خدمة قديمة وإصدارها.</li>
+        <li>تبحث عن ثغرات مرتبطة بالإصدار (CVE).</li>
+        <li>تستخدم Metasploit لتجربة Exploit مناسب (ضمن بيئة اختبار وتصريح قانوني).</li>
+      </ul>
+
+      <h2>رابعًا: العلاقة بين Nmap و Metasploit والذكاء الاصطناعي</h2>
+      <p>
+        مع ازدياد حجم الشبكات وتعقيدها، أصبح التحليل اليدوي لنتائج الفحص والتقارير غير كافٍ.
+        هنا يأتي دور <b>الذكاء الاصطناعي</b> في تسريع التحليل وتقليل الأخطاء البشرية.
+      </p>
+
+      <h3>كيف يخدم الذكاء الاصطناعي هذه الأدوات؟</h3>
+      <ul>
+        <li>تحليل نتائج Nmap تلقائيًا وتلخيصها</li>
+        <li>تصنيف المخاطر حسب الخطورة (Risk Scoring)</li>
+        <li>اقتراح الاستغلالات المناسبة في Metasploit بشكل ذكي</li>
+        <li>تقليل الإنذارات الخاطئة (False Positives)</li>
+        <li>أتمتة عمليات اختبار الاختراق وإنتاج التقارير</li>
+      </ul>
+
+      <h2>خامسًا: كيفية ربط Nmap بالذكاء الاصطناعي</h2>
+      <p>
+        يمكن ربط Nmap مع الذكاء الاصطناعي عبر استخدام مخرجاته بصيغ قابلة للمعالجة (مثل XML/JSON)
+        ثم تحليلها باستخدام Python وتطبيق نماذج تعلم آلي.
+      </p>
+
+      <h3>فكرة عملية (آمنة ومفيدة)</h3>
+      <ul>
+        <li>تشغيل Nmap مع إخراج XML</li>
+        <li>قراءة الملف في Python</li>
+        <li>استخراج المنافذ والخدمات والإصدارات</li>
+        <li>مطابقة النتائج مع قاعدة بيانات CVE/CMDB</li>
+        <li>إخراج توصيات دفاعية تلقائية (Hardening/Firewall Rules)</li>
+      </ul>
+
+      <h2>سادسًا: كيفية ربط Metasploit بالذكاء الاصطناعي</h2>
+      <p>
+        يمكن للذكاء الاصطناعي دعم العمل مع Metasploit عبر <b>تحليل البيانات</b> وليس عبر “تنفيذ هجمات تلقائية”.
+        مثال: التنبؤ بنسبة نجاح الاستغلال، وترتيب أولويات الاختبار، وتوليد تقرير تقني واضح.
+      </p>
+
+      <h3>أمثلة استخدام AI بشكل مسؤول</h3>
+      <ul>
+        <li>قراءة نتائج الفحص والسجلات ثم تحويلها لتقرير مفهوم</li>
+        <li>تحديد “أكثر المسارات خطورة” داخل الشبكة (Attack Paths)</li>
+        <li>اقتراح إصلاحات (Patch / Configuration) قبل تجربة الاستغلال</li>
+      </ul>
+
+      <div class="note">
+        تنبيه مهم: دمج AI مع أدوات هجومية يجب أن يكون ضمن بيئة قانونية وبموافقة رسمية وبهدف دفاعي (Security Assessment).
       </div>
 
-      <div class="side-block">
-        <h3>التصنيفات</h3>
-        <div class="chips" id="catChips"></div>
+      <h2>سابعًا: ربط Nmap و Metasploit معًا باستخدام الذكاء الاصطناعي</h2>
+      <p>
+        السيناريو الذكي الكامل (بشكل دفاعي وآمن):
+      </p>
+      <ol>
+        <li>تشغيل Nmap لفحص الشبكة وتحديد الخدمات والإصدارات.</li>
+        <li>استخدام AI لتلخيص النتائج وتصنيفها حسب المخاطر.</li>
+        <li>مطابقة النتائج مع CVE + CVSS لتحديد الأولويات.</li>
+        <li>اقتراح “خيارات اختبار” داخل Metasploit (اقتراح فقط وليس تشغيل تلقائي دون رقابة).</li>
+        <li>تنفيذ اختبارات محددة ومراقبة النتائج ثم إنشاء تقرير تلقائي.</li>
+      </ol>
+
+      <h2>ثامنًا: فوائد الدمج مع الذكاء الاصطناعي</h2>
+      <ul>
+        <li>تسريع عمليات التقييم الأمني (Assessment)</li>
+        <li>رفع دقة التحليل وتقليل الضوضاء</li>
+        <li>تحسين اتخاذ القرار عبر Risk-Based Approach</li>
+        <li>إنتاج تقارير احترافية بسرعة لفرق SOC و Blue Team</li>
+        <li>دعم أتمتة مهام متكررة (SOAR/SIEM Integrations)</li>
+      </ul>
+
+      <h2>خاتمة</h2>
+      <p>
+        إن دمج <b>Nmap</b> و <b>Metasploit</b> مع <b>الذكاء الاصطناعي</b> يمثل مستقبل الأمن السيبراني،
+        ليس بهدف “الاختراق” بل بهدف <b>الفهم العميق للمخاطر، تحسين الدفاعات، وبناء أنظمة ذكية تتنبأ بالتهديدات</b>.
+        وكلما كان الدمج مسؤولًا وقانونيًا وموجهًا للدفاع، كانت النتائج أقوى وأكثر فائدة للمؤسسات.
+      </p>
+    </article>
+
+    <section class="keywords" id="keywords">
+      <h2>🔑 الكلمات المفتاحية (SEO Keywords)</h2>
+      <p class="meta">يمكنك نسخها ووضعها في وصف المقال أو Meta Keywords أو وسوم المدونة.</p>
+
+      <div class="chips">
+        <span class="chip">Nmap</span>
+        <span class="chip">Metasploit</span>
+        <span class="chip">Cybersecurity</span>
+        <span class="chip">Ethical Hacking</span>
+        <span class="chip">Penetration Testing</span>
+        <span class="chip">Network Security</span>
+        <span class="chip">Vulnerability Assessment</span>
+        <span class="chip">Network Scanning</span>
+        <span class="chip">Port Scanning</span>
+        <span class="chip">OS Detection</span>
+        <span class="chip">Service Detection</span>
+        <span class="chip">NSE Scripts</span>
+        <span class="chip">Reconnaissance</span>
+        <span class="chip">Exploit</span>
+        <span class="chip">Payload</span>
+        <span class="chip">Meterpreter</span>
+        <span class="chip">Auxiliary Modules</span>
+        <span class="chip">Post Exploitation</span>
+        <span class="chip">CVE</span>
+        <span class="chip">CVSS</span>
+        <span class="chip">Threat Detection</span>
+        <span class="chip">Threat Intelligence</span>
+        <span class="chip">Blue Team</span>
+        <span class="chip">Red Team</span>
+        <span class="chip">SOC</span>
+        <span class="chip">SIEM</span>
+        <span class="chip">SOAR</span>
+        <span class="chip">IDS</span>
+        <span class="chip">IPS</span>
+        <span class="chip">Firewall Testing</span>
+        <span class="chip">Kali Linux</span>
+        <span class="chip">Offensive Security</span>
+        <span class="chip">Information Security</span>
+        <span class="chip">Risk Management</span>
+        <span class="chip">Attack Surface</span>
+        <span class="chip">Vulnerability Scanner</span>
+        <span class="chip">AI in Cybersecurity</span>
+        <span class="chip">Machine Learning Security</span>
+        <span class="chip">AI Penetration Testing</span>
+        <span class="chip">Automation in Cybersecurity</span>
+        <span class="chip">Smart Security Systems</span>
+        <span class="chip">Digital Forensics</span>
+        <span class="chip">Security Assessment</span>
+        <span class="chip">Network Analysis</span>
+        <span class="chip">Cyber Defense</span>
+        <span class="chip">Bug Bounty</span>
+        <span class="chip">Security Tools</span>
+        <span class="chip">Vulnerability Management</span>
+        <span class="chip">Patch Management</span>
+        <span class="chip">Hardening</span>
+        <span class="chip">Incident Response</span>
+        <span class="chip">Security Operations</span>
+        <span class="chip">CISO</span>
       </div>
-
-      <div class="side-block">
-        <h3>التاغات الأكثر استخدامًا</h3>
-        <div class="chips" id="topTags"></div>
-      </div>
-
-      <div class="side-block">
-        <h3>خيارات إضافية</h3>
-        <div class="row" style="justify-content:space-between;">
-          <a class="btn" href="#" id="btnExport">تصدير JSON</a>
-          <label class="btn" style="cursor:pointer;">
-            استيراد JSON
-            <input type="file" id="importFile" accept="application/json" hidden>
-          </label>
-        </div>
-        <div class="hint" style="margin-top:8px;">لتنقل مقالاتك بين الأجهزة.</div>
-      </div>
-
-      <div class="footer">
-        © <span id="year"></span> — قالب مدونة HTML (LocalStorage)
-      </div>
-    </aside>
-  </div>
-</div>
-
-<!-- Modal: New/Edit -->
-<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
-  <div class="modal">
-    <header>
-      <div class="modal-top">
-        <h3 id="modalTitle">مقال جديد</h3>
-        <button class="btn" id="btnClose">✕</button>
-      </div>
-    </header>
-
-    <div class="content">
-      <div class="field">
-        <input id="fTitle" type="text" placeholder="عنوان المقال" />
-      </div>
-      <div class="two">
-        <div class="field">
-          <select id="fCategory"></select>
-          <div class="hint" style="margin-top:6px;">اختر تصنيفًا أو اكتب تصنيفًا جديدًا في الحقل بالأسفل.</div>
-        </div>
-        <div class="field">
-          <input id="fCategoryNew" type="text" placeholder="تصنيف جديد (اختياري)" />
-        </div>
-      </div>
-      <div class="two">
-        <div class="field">
-          <input id="fTags" type="text" placeholder="تاغات مفصولة بفواصل: firewall, vpn, pentest" />
-        </div>
-        <div class="field">
-          <input id="fCover" type="url" placeholder="رابط صورة الغلاف (اختياري)" />
-        </div>
-      </div>
-      <div class="field">
-        <textarea id="fBody" placeholder="محتوى المقال… يمكنك كتابة نص طويل هنا."></textarea>
-      </div>
-      <div class="hint">سيتم إنشاء رابط للمقال مثل: #post=ID</div>
-    </div>
-
-    <div class="bar">
-      <button class="btn" id="btnPreview">👁️ معاينة</button>
-      <button class="btn primary" id="btnSave">💾 حفظ</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-/* =========================
-   Storage + Seed Data
-========================= */
-const KEY = "blog_posts_v1";
-const KEY_THEME = "blog_theme_v1";
-const KEY_COMMENTS = "blog_comments_v1";
-
-const seed = [
-  {
-    id: cryptoRandomId(),
-    title: "مقدمة سريعة عن Firewalls وأنواعها",
-    category: "أمن سيبراني",
-    tags: ["firewall","network-security","blue-team"],
-    cover: "",
-    body:
-`الجدار الناري (Firewall) هو خط دفاع أساسي للتحكم في حركة المرور بين الشبكات.
-
-**أنواع شائعة:**
-- Packet Filtering
-- Stateful Inspection
-- Next-Gen Firewall (NGFW)
-
-ابدأ بتحديد السياسات (Policies) ثم راقب السجلات (Logs) باستمرار.`,
-    createdAt: Date.now() - 1000*60*60*24*6
-  },
-  {
-    id: cryptoRandomId(),
-    title: "أساسيات تصميم شبكة صغيرة (Small Office)",
-    category: "شبكات",
-    tags: ["network-design","switching","routing"],
-    cover: "",
-    body:
-`قبل شراء الأجهزة، ارسم مخططًا واضحًا:
-- عدد المستخدمين
-- احتياج الـ Wi-Fi
-- VLANs
-- نقاط الفصل بين الضيوف والموظفين
-
-ثم اختبر الأداء وخطط للتوسع.`,
-    createdAt: Date.now() - 1000*60*60*24*3
-  },
-  {
-    id: cryptoRandomId(),
-    title: "ماذا يعني مبدأ أقل الصلاحيات (Least Privilege)؟",
-    category: "أفضل ممارسات",
-    tags: ["iam","least-privilege","security"],
-    cover: "",
-    body:
-`أعطِ كل مستخدم/خدمة أقل قدر من الصلاحيات اللازمة للعمل فقط.
-هذا يقلل تأثير أي اختراق أو خطأ بشري.
-
-ابدأ بـ:
-- مراجعة الصلاحيات دوريًا
-- إزالة الحسابات غير المستخدمة
-- تطبيق MFA`,
-    createdAt: Date.now() - 1000*60*60*24*1
-  }
-];
-
-function loadPosts(){
-  const raw = localStorage.getItem(KEY);
-  if(!raw){
-    localStorage.setItem(KEY, JSON.stringify(seed));
-    return structuredClone(seed);
-  }
-  try { return JSON.parse(raw) || []; } catch { return []; }
-}
-function savePosts(posts){
-  localStorage.setItem(KEY, JSON.stringify(posts));
-}
-function loadComments(){
-  const raw = localStorage.getItem(KEY_COMMENTS);
-  if(!raw) return {};
-  try { return JSON.parse(raw) || {}; } catch { return {}; }
-}
-function saveComments(map){
-  localStorage.setItem(KEY_COMMENTS, JSON.stringify(map));
-}
-
-/* =========================
-   State
-========================= */
-let posts = loadPosts();
-let commentsMap = loadComments();
-
-const state = {
-  q: "",
-  category: "",
-  tag: "",
-  sort: "newest",
-  page: 1,
-  perPage: 5,
-  mode: "list",      // list | reader
-  currentId: null,
-  editingId: null
-};
-
-/* =========================
-   Helpers
-========================= */
-function cryptoRandomId(){
-  // simple and safe-enough id for local use
-  return (crypto?.randomUUID?.() || ("id-" + Math.random().toString(16).slice(2) + Date.now().toString(16)));
-}
-function fmtDate(ts){
-  const d = new Date(ts);
-  return d.toLocaleDateString("ar-IQ", { year:"numeric", month:"short", day:"2-digit" });
-}
-function escapeHtml(s){
-  return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
-}
-function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.style.display = "block";
-  clearTimeout(toast._t);
-  toast._t = setTimeout(()=> t.style.display="none", 2200);
-}
-function normalizeTag(t){
-  return (t||"").trim().toLowerCase().replace(/\s+/g,"-");
-}
-function getAllCategories(){
-  const set = new Set(posts.map(p=>p.category).filter(Boolean));
-  return Array.from(set).sort((a,b)=> a.localeCompare(b, "ar"));
-}
-function getAllTags(){
-  const m = new Map();
-  for(const p of posts){
-    for(const t of (p.tags||[])){
-      m.set(t, (m.get(t)||0)+1);
-    }
-  }
-  return m;
-}
-function getFiltered(){
-  let arr = posts.slice();
-
-  if(state.q){
-    const q = state.q.toLowerCase();
-    arr = arr.filter(p=>{
-      const hay = (p.title+" "+p.body+" "+(p.category||"")+" "+(p.tags||[]).join(" ")).toLowerCase();
-      return hay.includes(q);
-    });
-  }
-  if(state.category){
-    arr = arr.filter(p=> (p.category||"") === state.category);
-  }
-  if(state.tag){
-    arr = arr.filter(p=> (p.tags||[]).includes(state.tag));
-  }
-
-  if(state.sort === "newest") arr.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
-  if(state.sort === "oldest") arr.sort((a,b)=> (a.createdAt||0) - (b.createdAt||0));
-  if(state.sort === "title")  arr.sort((a,b)=> (a.title||"").localeCompare(b.title||"", "ar"));
-
-  return arr;
-}
-function setTheme(next){
-  document.documentElement.setAttribute("data-theme", next);
-  localStorage.setItem(KEY_THEME, next);
-}
-function initTheme(){
-  const t = localStorage.getItem(KEY_THEME) || "dark";
-  setTheme(t);
-}
-
-/* =========================
-   Rendering
-========================= */
-function renderFilters(){
-  // category select
-  const catSel = document.getElementById("category");
-  const cats = getAllCategories();
-  catSel.innerHTML = `<option value="">كل التصنيفات</option>` + cats.map(c=>`<option ${c===state.category?"selected":""} value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-
-  // tag chips (top 10 by frequency)
-  const tagMap = getAllTags();
-  const sortedTags = Array.from(tagMap.entries()).sort((a,b)=> b[1]-a[1]).slice(0, 12);
-  const tagChips = document.getElementById("tagChips");
-  tagChips.innerHTML = `
-    <span class="chip ${state.tag===""?"active":""}" data-tag="">الكل</span>
-    ${sortedTags.map(([t,n])=> `<span class="chip ${t===state.tag?"active":""}" data-tag="${escapeHtml(t)}">#${escapeHtml(t)} <span style="opacity:.7">(${n})</span></span>`).join("")}
-  `;
-
-  // active filters label
-  const af = [];
-  if(state.q) af.push(`بحث: "${state.q}"`);
-  if(state.category) af.push(`تصنيف: ${state.category}`);
-  if(state.tag) af.push(`تاغ: #${state.tag}`);
-  document.getElementById("activeFilters").textContent = af.length ? af.join(" • ") : "لا توجد فلاتر نشطة";
-}
-
-function renderSidebar(){
-  // latest
-  const latest = posts.slice().sort((a,b)=> (b.createdAt||0)-(a.createdAt||0)).slice(0,6);
-  document.getElementById("latest").innerHTML = latest.map(p=>`
-    <div class="side-item">
-      <a href="#post=${encodeURIComponent(p.id)}">${escapeHtml(p.title)}</a>
-      <span>${fmtDate(p.createdAt)}</span>
-    </div>
-  `).join("");
-
-  // category chips
-  const cats = getAllCategories();
-  const catChips = document.getElementById("catChips");
-  catChips.innerHTML = cats.map(c=>`
-    <span class="chip ${c===state.category?"active":""}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</span>
-  `).join("") || `<div class="hint">لا توجد تصنيفات بعد.</div>`;
-
-  // top tags chips
-  const tagMap = getAllTags();
-  const top = Array.from(tagMap.entries()).sort((a,b)=> b[1]-a[1]).slice(0, 18);
-  document.getElementById("topTags").innerHTML = top.map(([t,n])=>`
-    <span class="chip ${t===state.tag?"active":""}" data-tag="${escapeHtml(t)}">#${escapeHtml(t)} <span style="opacity:.7">(${n})</span></span>
-  `).join("") || `<div class="hint">لا توجد تاغات بعد.</div>`;
-}
-
-function renderList(){
-  const wrap = document.getElementById("posts");
-  const pager = document.getElementById("pager");
-  const list = getFiltered();
-
-  // pagination
-  const total = list.length;
-  const pages = Math.max(1, Math.ceil(total / state.perPage));
-  state.page = Math.min(state.page, pages);
-  const start = (state.page-1)*state.perPage;
-  const slice = list.slice(start, start + state.perPage);
-
-  document.getElementById("count").textContent = `${total} مقال`;
-
-  wrap.innerHTML = slice.map(p=>{
-    const excerpt = (p.body||"").trim().slice(0, 140) + ((p.body||"").length > 140 ? "…" : "");
-    return `
-      <article class="post">
-        <div class="meta">
-          <span>📁 ${escapeHtml(p.category||"بدون تصنيف")}</span>
-          <span>🗓️ ${fmtDate(p.createdAt)}</span>
-          <span>🔗 <a href="#post=${encodeURIComponent(p.id)}" style="text-decoration:underline;color:inherit;">رابط المقال</a></span>
-        </div>
-        <h3 class="title"><a href="#post=${encodeURIComponent(p.id)}">${escapeHtml(p.title)}</a></h3>
-        <p class="excerpt">${escapeHtml(excerpt)}</p>
-        <div class="row">
-          ${(p.tags||[]).slice(0,8).map(t=>`<span class="tag">#${escapeHtml(t)}</span>`).join(" ")}
-        </div>
-        <div class="post-actions">
-          <button class="btn" data-open="${escapeHtml(p.id)}">قراءة</button>
-          <button class="btn" data-edit="${escapeHtml(p.id)}">تعديل</button>
-          <button class="btn danger" data-del="${escapeHtml(p.id)}">حذف</button>
-        </div>
-      </article>
-    `;
-  }).join("") || `<div class="hint">لا توجد نتائج. جرّب تغيير البحث أو إزالة الفلاتر.</div>`;
-
-  pager.innerHTML = `
-    <button class="btn" ${state.page<=1?"disabled":""} data-page="prev">السابق</button>
-    <span class="pageinfo">صفحة ${state.page} من ${pages}</span>
-    <button class="btn" ${state.page>=pages?"disabled":""} data-page="next">التالي</button>
-  `;
-}
-
-function openReader(id){
-  const p = posts.find(x=>x.id===id);
-  if(!p){ toast("المقال غير موجود."); location.hash = ""; return; }
-
-  state.mode = "reader";
-  state.currentId = id;
-
-  document.getElementById("list").style.display = "none";
-  document.getElementById("reader").style.display = "block";
-
-  document.getElementById("readerMeta").innerHTML =
-    `<span>📁 ${escapeHtml(p.category||"بدون تصنيف")}</span>
-     <span>🗓️ ${fmtDate(p.createdAt)}</span>`;
-
-  document.getElementById("readerTitle").textContent = p.title || "";
-  document.getElementById("readerBody").textContent = p.body || "";
-
-  const tagsWrap = document.getElementById("readerTags");
-  tagsWrap.innerHTML = (p.tags||[]).map(t=> `<span class="chip" data-tag="${escapeHtml(t)}">#${escapeHtml(t)}</span>`).join("");
-
-  // share links
-  const url = location.origin + location.pathname + "#post=" + encodeURIComponent(p.id);
-  document.getElementById("shareX").href = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(p.title) + "&url=" + encodeURIComponent(url);
-  document.getElementById("shareFB").href = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url);
-  document.getElementById("shareWA").href = "https://wa.me/?text=" + encodeURIComponent(p.title + " " + url);
-
-  renderComments();
-}
-
-function closeReader(){
-  state.mode = "list";
-  state.currentId = null;
-  document.getElementById("reader").style.display = "none";
-  document.getElementById("list").style.display = "block";
-}
-
-function renderComments(){
-  const id = state.currentId;
-  const list = (commentsMap[id] || []).slice().sort((a,b)=> (b.at||0)-(a.at||0));
-  const wrap = document.getElementById("commentList");
-  wrap.innerHTML = list.map(c=>`
-    <div class="comment">
-      <div class="cmeta">
-        <span>👤 ${escapeHtml(c.name||"مجهول")}</span>
-        <span>${fmtDate(c.at)}</span>
-      </div>
-      <p>${escapeHtml(c.text||"")}</p>
-    </div>
-  `).join("") || `<div class="hint">لا توجد تعليقات بعد. كن أول من يعلق!</div>`;
-}
-
-/* =========================
-   Modal (New/Edit)
-========================= */
-function openModal(mode, id=null){
-  const backdrop = document.getElementById("modalBackdrop");
-  const mt = document.getElementById("modalTitle");
-  const fCategory = document.getElementById("fCategory");
-  const cats = getAllCategories();
-
-  fCategory.innerHTML =
-    `<option value="">اختر تصنيفًا</option>` +
-    cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-
-  if(mode==="new"){
-    state.editingId = null;
-    mt.textContent = "مقال جديد";
-    document.getElementById("fTitle").value = "";
-    document.getElementById("fCategory").value = "";
-    document.getElementById("fCategoryNew").value = "";
-    document.getElementById("fTags").value = "";
-    document.getElementById("fCover").value = "";
-    document.getElementById("fBody").value = "";
-  }else{
-    const p = posts.find(x=>x.id===id);
-    if(!p){ toast("تعذر فتح المقال للتعديل."); return; }
-    state.editingId = id;
-    mt.textContent = "تعديل المقال";
-    document.getElementById("fTitle").value = p.title || "";
-    document.getElementById("fCategory").value = p.category || "";
-    document.getElementById("fCategoryNew").value = "";
-    document.getElementById("fTags").value = (p.tags||[]).join(", ");
-    document.getElementById("fCover").value = p.cover || "";
-    document.getElementById("fBody").value = p.body || "";
-  }
-
-  backdrop.style.display = "flex";
-}
-function closeModal(){
-  document.getElementById("modalBackdrop").style.display = "none";
-}
-function saveFromModal(){
-  const title = document.getElementById("fTitle").value.trim();
-  const catSel = document.getElementById("fCategory").value.trim();
-  const catNew = document.getElementById("fCategoryNew").value.trim();
-  const category = catNew || catSel || "بدون تصنيف";
-  const tags = document.getElementById("fTags").value.split(",").map(normalizeTag).filter(Boolean);
-  const cover = document.getElementById("fCover").value.trim();
-  const body = document.getElementById("fBody").value.trim();
-
-  if(!title || !body){ toast("العنوان والمحتوى مطلوبان."); return; }
-
-  if(state.editingId){
-    const idx = posts.findIndex(p=>p.id===state.editingId);
-    if(idx>=0){
-      posts[idx] = { ...posts[idx], title, category, tags, cover, body };
-    }
-    toast("تم تحديث المقال ✅");
-  }else{
-    const p = { id: cryptoRandomId(), title, category, tags, cover, body, createdAt: Date.now() };
-    posts.push(p);
-    toast("تم إضافة المقال ✅");
-  }
-
-  savePosts(posts);
-  closeModal();
-  hydrate(); // rerender everything
-}
-function previewModal(){
-  const title = document.getElementById("fTitle").value.trim() || "(بدون عنوان)";
-  const body = document.getElementById("fBody").value.trim() || "(بدون محتوى)";
-  alert("معاينة سريعة:\n\n" + title + "\n\n" + body.slice(0, 500) + (body.length>500 ? "…" : ""));
-}
-
-/* =========================
-   Delete
-========================= */
-function deletePost(id){
-  const p = posts.find(x=>x.id===id);
-  if(!p) return;
-
-  if(!confirm("هل تريد حذف هذا المقال؟ لا يمكن التراجع.")) return;
-  posts = posts.filter(x=>x.id!==id);
-  savePosts(posts);
-
-  // remove its comments
-  delete commentsMap[id];
-  saveComments(commentsMap);
-
-  toast("تم حذف المقال 🗑️");
-  if(state.currentId===id) closeReader();
-  hydrate();
-}
-
-/* =========================
-   Comments
-========================= */
-function addComment(){
-  const id = state.currentId;
-  if(!id) return;
-
-  const name = document.getElementById("cName").value.trim() || "مجهول";
-  const email = document.getElementById("cEmail").value.trim();
-  const text = document.getElementById("cText").value.trim();
-
-  if(!text){ toast("اكتب تعليقًا أولاً."); return; }
-
-  const entry = { name, email, text, at: Date.now() };
-  commentsMap[id] = commentsMap[id] || [];
-  commentsMap[id].push(entry);
-  saveComments(commentsMap);
-
-  document.getElementById("cText").value = "";
-  toast("تمت إضافة التعليق ✅");
-  renderComments();
-}
-
-/* =========================
-   Import/Export
-========================= */
-function exportJSON(e){
-  e.preventDefault();
-  const data = { posts, commentsMap, exportedAt: Date.now() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "blog-export.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-async function importJSON(file){
-  try{
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if(!data.posts || !Array.isArray(data.posts)) throw new Error("صيغة غير صحيحة");
-    posts = data.posts;
-    commentsMap = data.commentsMap || {};
-    savePosts(posts);
-    saveComments(commentsMap);
-    toast("تم الاستيراد ✅");
-    hydrate();
-  }catch(err){
-    toast("فشل الاستيراد: " + (err?.message || "خطأ"));
-  }
-}
-
-/* =========================
-   Router (hash)
-========================= */
-function handleHash(){
-  const hash = location.hash || "";
-  const m = hash.match(/#post=([^&]+)/);
-  if(m){
-    const id = decodeURIComponent(m[1]);
-    openReader(id);
-  }else{
-    closeReader();
-  }
-}
-
-/* =========================
-   Hydrate (render all)
-========================= */
-function hydrate(){
-  // ensure unique IDs
-  posts = (posts||[]).filter(Boolean);
-
-  renderFilters();
-  renderSidebar();
-  renderList();
-
-  // fill modal category select each time
-  // also update reader tags chip click
-}
-
-/* =========================
-   Events
-========================= */
-function bind(){
-  // year
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  // theme
-  initTheme();
-  document.getElementById("btnTheme").addEventListener("click", ()=>{
-    const cur = document.documentElement.getAttribute("data-theme") || "dark";
-    setTheme(cur==="dark
-
+    </section>
+
+    <footer>
+      © جميع الحقوق محفوظة — مدونة الشبكات والأمن السيبراني
+    </footer>
+  </main>
+</body>
+</html>
