@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مقال: تحديثات الأمان لويندوز 10 و11 وأندرويد ومواقع التواصل الاجتماعي</title>
+
+  <!-- SEO -->
+  <meta name="description" content="مقال شامل عن تحديثات الأمان لأنظمة Windows 10 و Windows 11 و Android وأمان مواقع التواصل الاجتماعي، مع نصائح عملية وكلمات مفتاحية SEO وزر رجوع للموقع." />
+  <meta name="keywords" content="تحديثات الأمان, Windows 10 Security Updates, Windows 11 Security Updates, Android Security Updates, Social Media Security, Patch Management, Cybersecurity, حماية الحسابات, المصادقة الثنائية, تحديثات النظام, أمن المعلومات" />
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0a1a2c;
+      --card:#0f1a33cc;
+      --text:#eaf0ff;
+      --muted:#b9c6e6;
+      --accent:#4aa3ff;
+      --accent2:#7c5cff;
+      --border:rgba(255,255,255,.12);
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --codebg: rgba(255,255,255,.06);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:"Tajawal", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 20% 15%, rgba(74,163,255,.22), transparent 60%),
+        radial-gradient(900px 550px at 80% 10%, rgba(124,92,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 50% 100%, rgba(34,211,238,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      overflow-x:hidden;
+      line-height: 2;
+    }
+
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(9, 14, 30, .55);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .nav{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+    }
+
+    .dot{
+      width:12px;height:12px;border-radius:50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px rgba(74,163,255,.35);
+    }
+
+    .navLinks a{
+      display:inline-flex;
+      padding: 10px 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .navLinks a:hover{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 14px 90px;
+    }
+
+    .hero{
+      margin-top: 18px;
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-weight:800;
+      font-size: 14px;
+    }
+
+    h1{
+      margin: 14px 0 8px;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height:1.3;
+      font-weight: 900;
+    }
+
+    .meta{
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .content{
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    h2{
+      margin: 20px 0 8px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    h3{
+      margin: 16px 0 8px;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    ul{
+      margin: 8px 0 18px;
+      padding: 0 18px 0 0;
+    }
+
+    li{ margin: 6px 0; color: var(--text); }
+
+    .note{
+      margin: 14px 0;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(74,163,255,.25);
+      background: rgba(74,163,255,.10);
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .checklist{
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 14px 0 18px;
+    }
+
+    .keywords{
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 10px;
+    }
+
+    .chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    /* زر الرجوع للمسار المحدد */
+    .home-btn{
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 56px;
+      height: 56px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #071221;
+      font-size: 22px;
+      font-weight: 900;
+      border-radius: 18px;
+      text-decoration: none;
+      box-shadow: 0 12px 30px rgba(0,0,0,.45);
+      z-index: 9999;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .home-btn:hover{
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 18px 45px rgba(0,0,0,.6);
+      text-decoration: none;
+    }
+    @media (max-width:600px){
+      .home-btn{ width: 50px; height: 50px; font-size: 20px; }
+    }
+
+    footer{
+      margin-top: 18px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 14px;
+      padding: 18px 10px 0;
+    }
+
+    html{ scroll-behavior:smooth; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="nav">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>مدونة الشبكات والأمن السيبراني</span>
+      </div>
+      <div class="navLinks">
+        <a href="#article">المقال</a>
+        <a href="#windows">Windows</a>
+        <a href="#android">Android</a>
+        <a href="#social">التواصل</a>
+        <a href="#keywords">الكلمات المفتاحية</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" id="article">
+      <span class="badge">🛡️ Security Updates • 🔐 Protection • ✅ Best Practices</span>
+      <h1>تحديثات الأمان: ويندوز 10 و11، أندرويد، ومواقع التواصل الاجتماعي</h1>
+      <p class="meta">
+        دليل عملي يشرح أهمية تحديثات الأمان وكيفية إدارتها على Windows 10/11 وAndroid،
+        بالإضافة إلى أفضل خطوات حماية حسابات مواقع التواصل الاجتماعي من الاختراق والتصيد.
+      </p>
+    </section>
+
+    <article class="content">
+      <h2>مقدمة</h2>
+      <p>
+        تحديثات الأمان ليست مجرد “إزعاج” يظهر فجأة ويطلب إعادة تشغيل الجهاز، بل هي أحد أهم خطوط الدفاع
+        ضد الثغرات والبرمجيات الخبيثة والهجمات المتطورة. كثير من الهجمات تنجح لأن الجهاز أو التطبيق لم يتم تحديثه،
+        وبالتالي تبقى الثغرة مفتوحة لوقت طويل. لذلك تُعد إدارة التحديثات (Patch Management) جزءًا أساسيًا من
+        أمن المعلومات سواء للأفراد أو الشركات.
+      </p>
+
+      <div class="note">
+        القاعدة الذهبية: كلما كان النظام محدثًا + النسخ الاحتياطي موجود + المصادقة الثنائية مفعلة،
+        تقل احتمالية الاختراق بشكل كبير.
+      </div>
+
+      <h2 id="windows">أولًا: تحديثات الأمان في Windows 10 و Windows 11</h2>
+      <p>
+        أنظمة ويندوز تعتمد على تحديثات دورية تشمل إصلاح ثغرات أمنية، تحسينات للنواة (Kernel)،
+        تحديثات المتصفح وDefender، وأحيانًا تحديثات كبيرة للميزات. من الناحية الأمنية، أهم ما يهمنا هو:
+        <b>تحديثات الثغرات (Security Patches)</b> التي تُغلق نقاط ضعف قد تُستغل لتنفيذ كود عن بُعد،
+        رفع صلاحيات، أو تجاوز الحماية.
+      </p>
+
+      <h3>لماذا تحديثات ويندوز مهمة؟</h3>
+      <ul>
+        <li>إغلاق ثغرات معروفة يتم استغلالها بسرعة بعد الإعلان عنها.</li>
+        <li>تحسين الحماية المدمجة مثل Windows Defender وSmartScreen.</li>
+        <li>دعم تقنيات أمان مثل TPM, Secure Boot, VBS (خصوصًا في Windows 11).</li>
+        <li>تقليل فرص الإصابة ببرمجيات الفدية (Ransomware) والهجمات عبر الشبكة.</li>
+      </ul>
+
+      <h3>أفضل إعدادات تحديث ويندوز (نصائح عملية)</h3>
+      <div class="checklist">
+        <ul>
+          <li>فعّل التحديث التلقائي: Settings → Update & Security → Windows Update.</li>
+          <li>فعّل تحديثات Defender: ضمن Windows Security.</li>
+          <li>استخدم إعادة تشغيل مجدولة بدل التأجيل الطويل.</li>
+          <li>حدّث برامج الطرف الثالث (Chrome/Edge/Office/Java) لأنها مصدر شائع للثغرات.</li>
+        </ul>
+      </div>
+
+      <h3>فرق سريع بين Windows 10 و Windows 11 من ناحية الأمان</h3>
+      <ul>
+        <li><b>Windows 11</b> يركز أكثر على متطلبات الأمان (TPM 2.0 + Secure Boot) مما يقلل فرص بعض الهجمات.</li>
+        <li><b>Windows 10</b> قوي أيضًا، لكن يعتمد أكثر على إعدادات المستخدم وتحديثات مستمرة للحفاظ على نفس المستوى.</li>
+      </ul>
+
+      <h2 id="android">ثانيًا: تحديثات الأمان في Android</h2>
+      <p>
+        أندرويد يعتمد على تحديثات أمان شهرية (Security Patch Level) وتحديثات للنظام أو للواجهة حسب الشركة المصنعة.
+        المشكلة الأساسية أن بعض الأجهزة تتأخر في الحصول على التحديثات بسبب اختلاف الشركات والنسخ.
+        لذلك من المهم دائمًا اختيار جهاز يحصل على تحديثات منتظمة، وتفعيل تحديثات متجر Play.
+      </p>
+
+      <h3>أين تجد مستوى تحديث أندرويد؟</h3>
+      <ul>
+        <li>Settings → Security → Android security patch level</li>
+        <li>أو Settings → About phone → Software information</li>
+      </ul>
+
+      <h3>ماذا تفعل تحديثات أندرويد الأمنية؟</h3>
+      <ul>
+        <li>إغلاق ثغرات قد تسمح بتشغيل كود خبيث عبر تطبيق أو ملف أو صفحة ويب.</li>
+        <li>إصلاح مشاكل في البلوتوث/Wi-Fi/النظام يمكن استغلالها.</li>
+        <li>تحسين الحماية ضد تطبيقات خبيثة وأساليب التصيّد.</li>
+      </ul>
+
+      <h3>نصائح مهمة لحماية أندرويد بجانب التحديث</h3>
+      <div class="checklist">
+        <ul>
+          <li>فعّل Google Play Protect.</li>
+          <li>لا تثبّت APK من مصادر غير موثوقة.</li>
+          <li>فعّل قفل الشاشة (PIN/Password) + بصمة.</li>
+          <li>فعّل المصادقة الثنائية لحساب Google.</li>
+          <li>راجع صلاحيات التطبيقات (Permissions) واحذف غير الضروري.</li>
+        </ul>
+      </div>
+
+      <h2 id="social">ثالثًا: تحديثات الأمان وحماية مواقع التواصل الاجتماعي</h2>
+      <p>
+        منصات التواصل ليست “نظام تشغيل”، لكنها تتطور باستمرار وتصدر تحديثات أمنية داخل التطبيق والخوادم.
+        الخطر الأكبر هنا ليس فقط ثغرات تقنية، بل أيضًا <b>الهندسة الاجتماعية</b> (Social Engineering)
+        مثل التصيّد، اختراق الحساب عبر كلمة مرور ضعيفة، أو سرقة جلسة تسجيل الدخول.
+      </p>
+
+      <h3>لماذا تحدث اختراقات حسابات التواصل غالبًا؟</h3>
+      <ul>
+        <li>استخدام كلمة مرور ضعيفة أو مكررة في أكثر من موقع.</li>
+        <li>الضغط على روابط تصيّد مزيفة تشبه صفحة تسجيل الدخول.</li>
+        <li>عدم تفعيل المصادقة الثنائية (2FA).</li>
+        <li>تسجيل دخول من أجهزة عامة أو شبكات Wi-Fi غير آمنة.</li>
+        <li>تطبيقات طرف ثالث تحصل على صلاحيات حسابك دون انتباه.</li>
+      </ul>
+
+      <h3>أفضل إجراءات حماية حسابات التواصل (Facebook / Instagram / X / TikTok / WhatsApp وغيرها)</h3>
+      <div class="checklist">
+        <ul>
+          <li>فعّل المصادقة الثنائية (2FA) عبر تطبيق Authenticator إن أمكن.</li>
+          <li>استخدم كلمة مرور قوية وفريدة لكل حساب.</li>
+          <li>راجع جلسات تسجيل الدخول (Login Activity) واحذف الأجهزة الغريبة.</li>
+          <li>حدث التطبيق دائمًا من المتجر الرسمي.</li>
+          <li>لا تفتح روابط مجهولة (خصوصًا روابط “استعادة الحساب” المزيفة).</li>
+          <li>أوقف صلاحيات التطبيقات المتصلة بالحساب (Connected Apps).</li>
+          <li>فعّل إشعارات تسجيل الدخول (Login Alerts).</li>
+        </ul>
+      </div>
+
+      <h3>كيف تتأكد أنك تستخدم آخر تحديث؟</h3>
+      <ul>
+        <li>على Android: افتح Google Play → Manage apps & device → Update all.</li>
+        <li>على Windows: تأكد أن المتصفح (Chrome/Edge/Firefox) محدث لأن أغلب الهجمات تبدأ من الويب.</li>
+        <li>راجع إعدادات الحساب: كثير من المنصات تضيف خيارات أمان جديدة مع الوقت.</li>
+      </ul>
+
+      <h2>نصيحة شاملة: خطة تحديث وأمان بسيطة</h2>
+      <p>
+        إذا أردت خطة عملية لا تتجاوز 10 دقائق أسبوعيًا:
+      </p>
+      <ul>
+        <li>افحص تحديثات Windows مرة بالأسبوع + حدث Defender.</li>
+        <li>افحص Security Patch Level في Android كل شهر.</li>
+        <li>حدّث تطبيقات التواصل والمتصفح دائمًا.</li>
+        <li>راجع نشاط تسجيل الدخول لحساباتك مرة بالشهر.</li>
+        <li>خذ نسخة احتياطية دورية للملفات المهمة.</li>
+      </ul>
+
+      <h2>خاتمة</h2>
+      <p>
+        تحديثات الأمان هي خط الدفاع الأول ضد الثغرات، لكنها ليست وحدها كافية. الدمج بين
+        <b>التحديث المستمر</b> و<b>سلوك استخدام آمن</b> و<b>إعدادات حماية قوية</b> هو ما يصنع فرقًا حقيقيًا.
+        ابدأ بالأشياء الأساسية: حدّث النظام، فعّل المصادقة الثنائية، واستخدم كلمات مرور قوية.
+        بهذه الخطوات البسيطة ستغلق أغلب الأبواب التي يعتمد عليها المهاجمون.
+      </p>
+    </article>
+
+    <section class="keywords" id="keywords">
+      <h2>🔑 الكلمات المفتاحية (SEO Keywords)</h2>
+      <p class="meta">يمكنك نسخها ووضعها في وصف المقال أو Meta Keywords أو وسوم المدونة.</p>
+
+      <div class="chips">
+        <span class="chip">تحديثات الأمان</span>
+        <span class="chip">Security Updates</span>
+        <span class="chip">Windows 10</span>
+        <span class="chip">Windows 11</span>
+        <span class="chip">Windows Update</span>
+        <span class="chip">Microsoft Defender</span>
+        <span class="chip">Patch Tuesday</span>
+        <span class="chip">Patch Management</span>
+        <span class="chip">Android Security Patch</span>
+        <span class="chip">Android Updates</span>
+        <span class="chip">Google Play Protect</span>
+        <span class="chip">Mobile Security</span>
+        <span class="chip">Social Media Security</span>
+        <span class="chip">Account Security</span>
+        <span class="chip">Two Factor Authentication</span>
+        <span class="chip">2FA</span>
+        <span class="chip">Password Security</span>
+        <span class="chip">Phishing</span>
+        <span class="chip">Ransomware</span>
+        <span class="chip">Cybersecurity</span>
+        <span class="chip">Information Security</span>
+        <span class="chip">Digital Safety</span>
+        <span class="chip">Privacy</span>
+        <span class="chip">Device Protection</span>
+        <span class="chip">Secure Accounts</span>
+        <span class="chip">Login Alerts</span>
+        <span class="chip">Connected Apps</span>
+        <span class="chip">Backup</span>
+        <span class="chip">Firewall</span>
+        <span class="chip">Antivirus</span>
+      </div>
+    </section>
+
+    <footer>
+      © جميع الحقوق محفوظة — مدونة الشبكات والأمن السيبراني
+    </footer>
+  </main>
+
+  <!-- زر الرجوع للمسار -->
+  <a class="home-btn" href="https://ayamaeen.github.io/ayamanahmeed/" title="الرجوع للصفحة الرئيسية">
+    ⟵
+  </a>
+</body>
+</html>
